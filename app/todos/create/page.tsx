@@ -1,71 +1,72 @@
 'use client'
 
-import { useState } from 'react'
-import { TodoFormSchema, type TodoStatus } from '@/types/todo'
+import { useActionState } from 'react'
+import { createTodo, type CreateTodoState } from './actions'
 
-type FieldErrors = {
-  title?: string
-  content?: string
-  status?: string
-}
+const initialState: CreateTodoState = {}
 
 export default function TodoCreatePage() {
-  const [errors, setErrors] = useState<FieldErrors>({})
-
-  const handleSubmit = (formData: FormData) => {
-    const input = {
-      title: String(formData.get('title') ?? ''),
-      content: String(formData.get('content') ?? ''),
-      status: String(formData.get('status') ?? 'not_started') as TodoStatus,
-    }
-
-    const result = TodoFormSchema.safeParse(input)
-
-    if (!result.success) {
-      const nextErrors: FieldErrors = {}
-      for (const issue of result.error.issues) {
-        const key = issue.path[0]
-        if (key === 'title' || key === 'content' || key === 'status') {
-          nextErrors[key] = issue.message
-        }
-      }
-      setErrors(nextErrors)
-      return
-    }
-
-    setErrors({})
-    alert('バリデーションOK（作成処理は次で実装）')
-  }
+  const [state, formAction, pending] = useActionState(createTodo, initialState)
 
   return (
-    <main className="p-6 max-w-xl">
+    <main className="p-6 min-h-screen w-full bg-white text-black">
       <h1 className="text-2xl font-bold">TODO作成</h1>
 
-      <form action={handleSubmit} className="mt-4 space-y-4">
+      <form action={formAction} className="mt-4 space-y-4">
         <div>
-          <label className="block text-sm font-medium">title</label>
-          <input name="title" className="w-full border rounded px-3 py-2" />
-          {errors.title && <p className="text-red-600 text-sm mt-1">{errors.title}</p>}
+          <label htmlFor="title" className="block text-sm font-medium">
+            title
+          </label>
+          <input
+            id="title"
+            name="title"
+            required
+            maxLength={50}
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white text-black caret-black"
+          />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">content</label>
-          <textarea name="content" className="w-full border rounded px-3 py-2" />
-          {errors.content && <p className="text-red-600 text-sm mt-1">{errors.content}</p>}
+          <label htmlFor="content" className="block text-sm font-medium">
+            content
+          </label>
+          <textarea
+            id="content"
+            name="content"
+            required
+            maxLength={100}
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white text-black caret-black"
+          />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">status</label>
-          <select name="status" defaultValue="not_started" className="w-full border rounded px-3 py-2">
+          <label htmlFor="status" className="block text-sm font-medium">
+            status
+          </label>
+          <select
+            id="status"
+            name="status"
+            defaultValue="not_started"
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white text-black"
+          >
             <option value="not_started">not_started</option>
             <option value="in_progress">in_progress</option>
             <option value="done">done</option>
           </select>
-          {errors.status && <p className="text-red-600 text-sm mt-1">{errors.status}</p>}
         </div>
 
-        <button type="submit" className="border rounded px-4 py-2">
-          作成
+        {state.message && (
+          <p className="text-sm text-red-600" aria-live="polite">
+            {state.message}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={pending}
+          className="border rounded px-4 py-2"
+        >
+          {pending ? '作成中...' : '作成'}
         </button>
       </form>
     </main>
