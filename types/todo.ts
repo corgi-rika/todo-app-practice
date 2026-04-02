@@ -22,12 +22,12 @@ export const TodoCreateSchema = TodoSchema.omit({
   updated_at: true,
 })
 
-// 作成・編集で共通利用する入力用スキーマ
+export type TodoCreate = z.infer<typeof TodoCreateSchema>
+
 export const TodoFormSchema = z.object({
   title: z.string().min(1, 'タイトルは必須です').max(50, 'タイトルは50文字以内です'),
   content: z.string().min(1, '内容は必須です').max(100, '内容は100文字以内です'),
   status: TodoStatus,
 })
 
-
-export type TodoCreate = z.infer<typeof TodoCreateSchema>
+export type TodoFormValues = z.infer<typeof TodoFormSchema>
