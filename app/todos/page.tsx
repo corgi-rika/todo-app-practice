@@ -4,6 +4,12 @@ import { redirect } from 'next/navigation'
 // サーバー側で Supabase を使うための関数を読み込みます
 import { createClient } from '../../lib/supabase/server'
 
+// ログアウト処理を読み込みます
+import { logout } from './actions'
+
+
+
+
 // URLの ?status=...&sort=...&order=... を受け取るための型です
 type SearchParams = Promise<{
   // ステータス絞り込み用です
@@ -113,6 +119,19 @@ export default async function TodosPage({
     <main className="p-6">
       {/* ページタイトルです */}
       <h1 className="text-2xl font-bold">TODO一覧ページ</h1>
+
+      {/* タイトルとログアウトボタンを横並びにします */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">TODO一覧ページ</h1>
+        <form action={logout}>
+          <button type="submit" className="border rounded px-4 py-2 text-sm">
+            ログアウト
+          </button>
+        </form>
+      </div>
+
+      {/* 補足文です */}
+      <p className="mt-2 text-sm opacity-80"></p>
 
       {/* 補足文です */}
       <p className="mt-2 text-sm opacity-80">

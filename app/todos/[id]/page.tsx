@@ -10,6 +10,8 @@ import { createClient } from '../../../lib/supabase/server'
 // さっき作った削除関数を読み込みます
 import { deleteTodo } from './actions'
 
+
+
 // URL の /todos/abc-123 の「abc-123」部分を受け取るための型です
 // docs にあった通り、params は Promise です
 type Params = Promise<{ id: string }>
