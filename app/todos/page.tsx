@@ -247,6 +247,14 @@ export default async function TodosPage({
               <p className="text-xs opacity-80">
                 updated_at: {todo.updated_at}
               </p>
+
+               {/* 詳細ページへのリンクです。クリックするとこのTODOの詳細ページへ移動します */}
+    <a
+      href={`/todos/${todo.id}`}
+      className="mt-2 inline-block text-xs underline"
+    >
+      詳細を見る
+    </a>
             </li>
           ))}
         </ul>
